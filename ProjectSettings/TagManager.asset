@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Collectable
+  - Filler
+  - Collector
+  - PlayerStopper
+  - CollectableCleaner
+  - RampRotator
+  - RampExit
   layers:
   - Default
   - TransparentFX
@@ -15,9 +21,9 @@ TagManager:
   - Plane
   - Player
   - CubeTest
-  - 
-  - 
-  - 
+  - PoppedRock
+  - PlayerStopper
+  - CollectablePusher
   - 
   - 
   - 

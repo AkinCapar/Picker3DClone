@@ -7,13 +7,13 @@ public class CollectingPlace : MonoBehaviour
 {
     [SerializeField] private GameObject fillingPlane; // will fill the road gap if the needed amount of object collected
     [SerializeField] private GameObject gapToFill;
-    [SerializeField] private int neededObjectsAmount;
-    [SerializeField] private int collectedObjectsAmount;
+    [SerializeField] private int collectingPlaceNo;
+    LevelManager levelManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        levelManager = LevelManager.instance;
     }
 
     // Update is called once per frame
@@ -24,16 +24,42 @@ public class CollectingPlace : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Collectable")
+        if(collision.gameObject.tag == "Collectable" && collectingPlaceNo == 1)
         {
-            collectedObjectsAmount++;
+            levelManager.collectedObjectsAmount1++;
+        }
+       
+        if(levelManager.collectedObjectsAmount1 >= levelManager.neededObjectsAmount1)
+        {
+            StartCoroutine(FillTheGap());
         }
 
-        if(collectedObjectsAmount >= neededObjectsAmount)
+        if (collision.gameObject.tag == "Collectable" && collectingPlaceNo == 2)
         {
-            fillingPlane.transform.DOScale(gapToFill.transform.localScale, 2f);
-            fillingPlane.transform.DOMove(gapToFill.transform.position, 2f);
+            levelManager.collectedObjectsAmount2++;
+        }
+
+        if (levelManager.collectedObjectsAmount2 >= levelManager.neededObjectsAmount2)
+        {
+            StartCoroutine(FillTheGap());
+        }
+
+        if (collision.gameObject.tag == "Collectable" && collectingPlaceNo == 3)
+        {
+            levelManager.collectedObjectsAmount3++;
+        }
+
+        if (levelManager.collectedObjectsAmount3 >= levelManager.neededObjectsAmount3)
+        {
+            StartCoroutine(FillTheGap());
         }
     }
 
+    private IEnumerator FillTheGap()
+    {
+        yield return new WaitForSeconds(5);
+        fillingPlane.transform.DOScale(gapToFill.transform.localScale, 1f);
+        fillingPlane.transform.DOMove(gapToFill.transform.position, 1f);
+        StopCoroutine(FillTheGap());
+    }
 }
