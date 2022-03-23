@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class JoystickPlayerExample : MonoBehaviour
 {
@@ -10,9 +11,17 @@ public class JoystickPlayerExample : MonoBehaviour
     public FloatingJoystick floatingJoystick;
     //public Rigidbody rb;
     private float xPos;
-    private bool onRamp = false;
+    [SerializeField] private bool onRamp = false;
+    private bool isJumping = false;
     private int clickCounter = 0;
+    LevelManager levelManager;
+    UI ui;
 
+    private void Start()
+    {
+        levelManager = LevelManager.instance;
+        ui = UI.instance;
+    }
 
     public void FixedUpdate()
     {
@@ -46,7 +55,10 @@ public class JoystickPlayerExample : MonoBehaviour
 
     private void MovingForward()
     {
-        transform.position += transform.forward * verticalSpeed * Time.deltaTime;
+        if (isJumping == false)
+        {
+            transform.position += transform.forward * verticalSpeed * Time.deltaTime;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -60,30 +72,50 @@ public class JoystickPlayerExample : MonoBehaviour
 
         if(other.gameObject.tag == "RampExit")
         {
+            isJumping = true;
             transform.position += transform.forward * 2;
             RampExitJump();
-            verticalSpeed = 0f;
+        }
+
+        if(other.gameObject.tag == "AdvancerToNextLevel")
+        {
+            MoveToNextStartPoint();
         }
     }
+
+   private void MoveToNextStartPoint()
+   {
+       StartCoroutine(MoverToNextStartPoint());
+   }
+   
+   private IEnumerator MoverToNextStartPoint()
+   {
+       yield return new WaitForSeconds(3);
+       ui.winCanvas.SetActive(true);
+       StopCoroutine(MoverToNextStartPoint());
+   }
 
     private void RampExitJump()
     {
         var sequence = DOTween.Sequence();
 
         sequence.Append(
-            transform.DOMove(new Vector3(0, 1.3f, transform.position.z + clickCounter * 1.1f), 2));
+            transform.DOMove(new Vector3(0, 1.3f, transform.position.z + clickCounter * 1.75f), 2));
         sequence.Append(
             transform.DORotate(new Vector3(0, 0, 0), .5f));
         sequence.Append(
-            transform.DOMove(new Vector3(0, .2f, transform.position.z + clickCounter * 1.1f), .5f));
+            transform.DOMove(new Vector3(0, .2f, transform.position.z + clickCounter * 1.75f), .5f));
     }
 
     private void RampMovementAcceleratorEffect()
     {
-        if(onRamp == true && Input.GetMouseButton(0))
+        if(onRamp == true && Input.GetMouseButtonDown(0))
         {
             transform.position += transform.forward * Time.deltaTime * 2f;
-            clickCounter++;
+            if (clickCounter < 50)
+            {
+                clickCounter++;
+            }
         }
     }
 }

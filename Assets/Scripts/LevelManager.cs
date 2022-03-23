@@ -11,7 +11,7 @@ public class LevelManager : MonoBehaviour
     public int collectedObjectsAmount2;
     public int neededObjectsAmount3;
     public int collectedObjectsAmount3;
-
+    public GameObject nextLevelStartingPlace;
 
     private void Awake()
     {

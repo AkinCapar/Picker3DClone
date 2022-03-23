@@ -9,11 +9,13 @@ public class CollectingPlace : MonoBehaviour
     [SerializeField] private GameObject gapToFill;
     [SerializeField] private int collectingPlaceNo;
     LevelManager levelManager;
+    UI ui;
 
     // Start is called before the first frame update
     void Start()
     {
         levelManager = LevelManager.instance;
+        ui = UI.instance;
     }
 
     // Update is called once per frame
@@ -32,11 +34,13 @@ public class CollectingPlace : MonoBehaviour
         if(levelManager.collectedObjectsAmount1 >= levelManager.neededObjectsAmount1)
         {
             StartCoroutine(FillTheGap());
+            ui.gameCanvasLevelCompletionImage1.SetActive(true);
         }
 
         if (collision.gameObject.tag == "Collectable" && collectingPlaceNo == 2)
         {
             levelManager.collectedObjectsAmount2++;
+            ui.gameCanvasLevelCompletionImage2.SetActive(true);
         }
 
         if (levelManager.collectedObjectsAmount2 >= levelManager.neededObjectsAmount2)
@@ -47,6 +51,7 @@ public class CollectingPlace : MonoBehaviour
         if (collision.gameObject.tag == "Collectable" && collectingPlaceNo == 3)
         {
             levelManager.collectedObjectsAmount3++;
+            ui.gameCanvasLevelCompletionImage3.SetActive(true);
         }
 
         if (levelManager.collectedObjectsAmount3 >= levelManager.neededObjectsAmount3)
